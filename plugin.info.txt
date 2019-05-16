@@ -2,6 +2,6 @@ base   userimportextended
 author Anna Dabrowska
 email  dokuwiki@cosmocode.de
 date   2019-05-14
-name   userimport plugin
+name   User import extended
 desc   Extended CSV import with passwords and default values, based on User Manager
 url    http://www.dokuwiki.org/plugin:userimportextended
