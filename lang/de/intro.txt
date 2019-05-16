@@ -1,0 +1,10 @@
+===== Erweterter Benutzer-Massenimport =====
+
+Um mehrere Benutzer gleichzeitig zu importieren, wird eine CSV-Datei mit den folgenden fünf Spalten benötigt (in dieser Reihenfolge): Benutzer-ID, Passwort, Voller Name, E-Mail-Adresse und Gruppen.
+Die CSV-Felder sind Kommata-separiert (,) und mit Anführungszeichen eingefasst (%%"%%). Mit Backslashes (\) können Sonderzeichen maskiert werden.
+
+Alle Spalten außer Benutzer-ID können leer sein. In diesem Fall werden die fehlenden Werte mit den Standardangaben befüllt, die Sie im Formular eingetragen haben.
+
+Doppelte Benutzer-IDs werden ignoriert.
+
+Jedem importierten Benutzer wird sein Benutzername und Passwort per E-Mail zugestellt.

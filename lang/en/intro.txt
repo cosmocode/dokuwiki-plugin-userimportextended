@@ -1,0 +1,10 @@
+===== Extended Bulk User Import =====
+
+Requires a CSV file of users with at least five columns. The columns must contain, in order: user-id, password, full name, email address and groups.
+The CSV fields should be separated by commas (,) and strings delimited by quotation marks (%%""%%). Backslash (\) can be used for escaping.
+
+Except for the user-id, all of the columns may be empty. In that case the users will be created with the default values you provide in the form.
+
+Duplicate user-ids will be ignored.
+
+Each successfully imported user will receive an email with their username and password.
