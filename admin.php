@@ -104,23 +104,25 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
      */
     protected function printFailuresHTML()
     {
+        var_dump($this->lang);
+
         global $ID;
         $failure_download_link = wl($ID,array('do'=>'admin','page'=>'userimportextended','cmd[importfails]'=>1));
 
         if ($this->_import_failures) {
             $digits = strlen(count($this->_import_failures));
             ptln('<div class="level3 import_failures">');
-            ptln('  <h3>'.$this->lang['import_header'].'</h3>');
+            ptln('  <h3>'.$this->getLang('import_header').'</h3>');
             ptln('  <table class="import_failures">');
             ptln('    <thead>');
             ptln('      <tr>');
-            ptln('        <th class="line">'.$this->lang['line'].'</th>');
-            ptln('        <th class="error">'.$this->lang['error'].'</th>');
-            ptln('        <th class="userid">'.$this->lang['user_id'].'</th>');
-            ptln('        <th class="userpass">'.$this->lang['user_pass'].'</th>');
-            ptln('        <th class="username">'.$this->lang['user_name'].'</th>');
-            ptln('        <th class="usermail">'.$this->lang['user_mail'].'</th>');
-            ptln('        <th class="usergroups">'.$this->lang['user_groups'].'</th>');
+            ptln('        <th class="line">'.$this->getLang('line').'</th>');
+            ptln('        <th class="error">'.$this->getLang('error').'</th>');
+            ptln('        <th class="userid">'.$this->getLang('user_id').'</th>');
+            ptln('        <th class="userpass">'.$this->getLang('user_pass').'</th>');
+            ptln('        <th class="username">'.$this->getLang('user_name').'</th>');
+            ptln('        <th class="usermail">'.$this->getLang('user_mail').'</th>');
+            ptln('        <th class="usergroups">'.$this->getLang('user_groups').'</th>');
             ptln('      </tr>');
             ptln('    </thead>');
             ptln('    <tbody>');
@@ -137,7 +139,7 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
             }
             ptln('    </tbody>');
             ptln('  </table>');
-            ptln('  <p><a href="'.$failure_download_link.'">'.$this->lang['import_downloadfailures'].'</a></p>');
+            ptln('  <p><a href="'.$failure_download_link.'">'.$this->getLang('import_downloadfailures').'</a></p>');
             ptln('</div>');
         }
     }
@@ -179,7 +181,7 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
         // check file uploaded ok.
         $upl = $this->_isUploadedFile($_FILES['import']['tmp_name']);
         if (empty($_FILES['import']['size']) || !empty($_FILES['import']['error']) && $upl) {
-            msg($this->lang['import_error_upload'],-1);
+             msg($this->getLang('import_error_upload'),-1);
             return false;
         }
         // retrieve users from the file
@@ -197,12 +199,12 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
                 $error = '';                        // clean out any errors from the previous line
                 // data checks...
                 if (1 == ++$line) {
-                    if ($raw[0] == 'user_id' || $raw[0] == $this->lang['user_id']) continue;    // skip headers
+                    if ($raw[0] == 'user_id' || $raw[0] == $this->getLang('user_id')) continue;    // skip headers
                 }
                 // in contrast to User Manager, 5 columns are required
                 if (count($raw) < 5) {                                        // need at least five fields
                     $import_fail_count++;
-                    $error = sprintf($this->lang['import_error_fields'], count($raw));
+                    $error = sprintf($this->getLang('import_error_fields'), count($raw));
                     $this->_import_failures[$line] = array('error' => $error, 'user' => $raw, 'orig' => $csv);
                     continue;
                 }
@@ -211,7 +213,7 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
                 if ($clean && $this->_addImportUser($clean, $error)) {
                     $sent = $this->_notifyUser($clean[0],$clean[1],false);
                     if (!$sent){
-                        msg(sprintf($this->lang['import_notify_fail'],$clean[0],$clean[3]),-1);
+                         msg(sprintf($this->getLang('import_notify_fail'),$clean[0],$clean[3]),-1);
                     }
                     $import_success_count++;
                 } else {
@@ -219,12 +221,12 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
                     $this->_import_failures[$line] = array('error' => $error, 'user' => $raw, 'orig' => $csv);
                 }
             }
-            msg(sprintf($this->lang['import_success_count'], ($import_success_count+$import_fail_count), $import_success_count),($import_success_count ? 1 : -1));
+             msg(sprintf($this->getLang('import_success_count'), ($import_success_count+$import_fail_count), $import_success_count),($import_success_count ? 1 : -1));
             if ($import_fail_count) {
-                msg(sprintf($this->lang['import_failure_count'], $import_fail_count),-1);
+                 msg(sprintf($this->getLang('import_failure_count'), $import_fail_count),-1);
             }
         } else {
-            msg($this->lang['import_error_readfail'],-1);
+             msg($this->getLang('import_error_readfail'),-1);
         }
 
         // save import failures into the session
@@ -280,25 +282,25 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
         $cleaned = $this->_retrieveUser();
         list($user,/* $pass */,$name,$mail,/* $grps */) = $cleaned;
         if (empty($user)) {
-            $error = $this->lang['import_error_baduserid'];
+            $error = $this->getLang('import_error_baduserid');
             return false;
         }
 
         // no need to check password, handled elsewhere
 
         if (!($this->_auth->canDo('modName') xor empty($name))){
-            $error = $this->lang['import_error_badname'];
+            $error = $this->getLang('import_error_badname');
             return false;
         }
 
         if ($this->_auth->canDo('modMail')) {
             if (empty($mail) || !mail_isvalid($mail)) {
-                $error = $this->lang['import_error_badmail'];
+                $error = $this->getLang('import_error_badmail');
                 return false;
             }
         } else {
             if (!empty($mail)) {
-                $error = $this->lang['import_error_badmail'];
+                $error = $this->getLang('import_error_badmail');
                 return false;
             }
         }
@@ -317,7 +319,7 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
      */
     protected function _addImportUser($user, & $error){
         if (!$this->_auth->triggerUserMod('create', $user)) {
-            $error = $this->lang['import_error_create'];
+            $error = $this->getLang('import_error_create');
             return false;
         }
 
@@ -364,11 +366,11 @@ class admin_plugin_userimportextended extends DokuWiki_Admin_Plugin
         $sent = auth_sendPassword($user,$password);
         if ($sent) {
             if ($status_alert) {
-                msg($this->lang['notify_ok'], 1);
+                 msg($this->getLang('notify_ok'), 1);
             }
         } else {
             if ($status_alert) {
-                msg($this->lang['notify_fail'], -1);
+                 msg($this->getLang('notify_fail'), -1);
             }
         }
 
